@@ -37,12 +37,13 @@ public class WeatherServiceImpl implements WeatherService{
     @Override
     public Mono<AppResponse> getForecastSummaryByLocationName(String location) {
         String url = rapidBaseApiUrl + location + AppConstants.RAPID_API_END_POINT_SUMMARY;
+        log.info("URL : {}", url);
         return reactiveWebClientService.getForMono(url, JsonNode.class, getRapidApiHeaders())
                 .map(jsonNode -> new AppResponse(jsonNode, AppConstants.SUCCESS))
                 .onErrorResume(e -> {
                     log.error("Error in getForecastSummaryByLocationName : {}", e.getMessage());
                     return Mono.just(new AppResponse(e.getMessage(), AppConstants.FAIL, getStatusCodeFromException(e)));
-                });
+                }).log();
     }
 
     @Override
