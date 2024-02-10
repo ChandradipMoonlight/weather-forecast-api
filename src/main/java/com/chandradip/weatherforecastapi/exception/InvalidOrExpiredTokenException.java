@@ -16,32 +16,38 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
-public class InvalidOrExpiredTokenException extends AbstractErrorWebExceptionHandler {
+public class InvalidOrExpiredTokenException extends RuntimeException{
 
-
-    /**
-     * Create a new {@code AbstractErrorWebExceptionHandler}.
-     *
-     * @param errorAttributes    the error attributes
-     * @param resources          the resources configuration properties
-     * @param applicationContext the application context
-     * @since 2.4.0
-     */
-    public InvalidOrExpiredTokenException(ErrorAttributes errorAttributes,
-                                          WebProperties.Resources resources,
-                                          ApplicationContext applicationContext,
-                                          ServerCodecConfigurer configurer) {
-        super(errorAttributes, resources, applicationContext);
+    public InvalidOrExpiredTokenException(String message) {
+        super(message);
     }
+//
+//
+//    /**
+//     * Create a new {@code AbstractErrorWebExceptionHandler}.
+//     *
+//     * @param errorAttributes    the error attributes
+//     * @param resources          the resources configuration properties
+//     * @param applicationContext the application context
+//     * @since 2.4.0
+//     */
+//    public InvalidOrExpiredTokenException(ErrorAttributes errorAttributes,
+//                                          WebProperties.Resources resources,
+//                                          ApplicationContext applicationContext,
+//                                          ServerCodecConfigurer configurer) {
+//        super(errorAttributes, resources, applicationContext);
+//    }
+//
+//    @Override
+//    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
+//        return RouterFunctions.route(RequestPredicates.all(), this::renderException);
+//    }
+//
+//    private Mono<ServerResponse> renderException(ServerRequest request) {
+//        Map<String, Object> error = getErrorAttributes(request, ErrorAttributeOptions.defaults());
+//        return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
+//                .body(BodyInserters.fromValue(error));
+//    }
 
-    @Override
-    protected RouterFunction<ServerResponse> getRoutingFunction(ErrorAttributes errorAttributes) {
-        return RouterFunctions.route(RequestPredicates.all(), this::renderException);
-    }
 
-    private Mono<ServerResponse> renderException(ServerRequest request) {
-        Map<String, Object> error = getErrorAttributes(request, ErrorAttributeOptions.defaults());
-        return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(error));
-    }
 }
