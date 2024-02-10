@@ -43,13 +43,13 @@ public class WeatherController {
     @GetMapping("/{city}/summary")
     Mono<ResponseEntity<AppResponse>> getForecastSummaryByLocationName(
             @PathVariable String city,
-            @RequestHeader("clientId") String clientId,
-            @RequestHeader("clientSecret") String clientSecret
+            @RequestHeader(value = "clientId",required = false) String clientId,
+            @RequestHeader(value = "clientSecret", required = false) String clientSecret
     ) {
-        if (!headerAuthenticationFilter.authenticateRequest(clientId, clientSecret)) {
-            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AppResponse("Invalid clientId and clientSecret", HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED.value())));
-        }
+//        if (!headerAuthenticationFilter.authenticateRequest(clientId, clientSecret)) {
+//            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(new AppResponse("Invalid clientId and clientSecret", HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED.value())));
+//        }
         return weatherService.getForecastSummaryByLocationName(city)
                 .map(appResponse -> {
                     if (appResponse.getStatus() == AppConstants.SUCCESS) {
@@ -78,14 +78,14 @@ public class WeatherController {
     @GetMapping("/{city}/hourly")
     Mono<ResponseEntity<AppResponse>> getHourlyForecastByLocation(
             @PathVariable String city,
-            @RequestHeader("clientId") String clientId,
-            @RequestHeader("clientSecret") String clientSecret
+            @RequestHeader(value = "clientId", required = false) String clientId,
+            @RequestHeader(value = "clientSecret", required = false) String clientSecret
     ) {
         // Implement authentication logic based on clientId and clientSecret
-        if (!headerAuthenticationFilter.authenticateRequest(clientId, clientSecret)) {
-            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new AppResponse("Invalid clientId and clientSecret", HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED.value())));
-        }
+//        if (!headerAuthenticationFilter.authenticateRequest(clientId, clientSecret)) {
+//            return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body(new AppResponse("Invalid clientId and clientSecret", HttpStatus.UNAUTHORIZED.toString(), HttpStatus.UNAUTHORIZED.value())));
+//        }
         return weatherService.getHourlyForecastByLocationName(city)
                 .map(appResponse -> {
                     if (appResponse.getStatus() == AppConstants.SUCCESS) {
