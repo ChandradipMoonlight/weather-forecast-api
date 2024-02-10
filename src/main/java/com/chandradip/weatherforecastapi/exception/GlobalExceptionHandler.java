@@ -1,6 +1,7 @@
 package com.chandradip.weatherforecastapi.exception;
 
 import com.chandradip.weatherforecastapi.mappers.AppErrors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,12 +33,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return Mono.just(ResponseEntity.badRequest().body(new AppErrors(e.getMessage())));
     }
 
-//    @ExceptionHandler(InvalidOrExpiredTokenException.class)
-//    public Mono<ResponseEntity<AppErrors>> handleInvalidOrExpiredTokenException(InvalidOrExpiredTokenException e) {
-//        Map<String, String> errorMap = new HashMap<>();
-//        errorMap.put("token", e.getMessage()); // Assuming 'token' is the field name
-//        return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AppErrors(errorMap)));
-//    }
+    @ExceptionHandler(InvalidOrExpiredTokenException.class)
+    public Mono<ResponseEntity<AppErrors>> handleInvalidOrExpiredTokenException(InvalidOrExpiredTokenException e) {
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("token", e.getMessage()); // Assuming 'token' is the field name
+        log.info("Handling InvalidOrExpiredTokenException : {}", errorMap);
+        return Mono.just(ResponseEntity.status(HttpStatus.FORBIDDEN).body(new AppErrors(errorMap)));
+    }
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<AppErrors>> handleGlobalException(Exception e) {
