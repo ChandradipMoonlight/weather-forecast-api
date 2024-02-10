@@ -41,32 +41,39 @@ public class JWTServiceImpl implements JWTService {
         }
     }
 
-    @Override
-    public boolean isTokenValid(String token, User userDetails) {
-        try {
-            return userDetails.getUsername().equals(getUserNameFromToken(token))
-                    && !isTokenExpired(token);
-        } catch (SignatureException e) {
-            // Log the error
-            log.error("Exception isValidToken : {}", e.getMessage());
-            // Handle the exception, return false or throw custom exception
-            return false;
-        }
-    }
+//    @Override
+//    public boolean isTokenValid(String token, User userDetails) {
+//        try {
+//            return userDetails.getUsername().equals(getUserNameFromToken(token))
+//                    && !isTokenExpired(token);
+//        } catch (SignatureException e) {
+//            // Log the error
+//            log.error("Exception isValidToken : {}", e.getMessage());
+//            // Handle the exception, return false or throw custom exception
+//            return false;
+//        }
+//    }
+
 
     @Override
+    public boolean isTokenValid(String token, User user) {
+        return user.getUsername().equals(getUserNameFromToken(token))
+                && !isTokenExpired(token);
+    }
+
+//    @Override
+//    public String getUserNameFromToken(String token) {
+//        try {
+//            return extractClaim(token, Claims::getSubject);
+//        } catch (SignatureException e) {
+//            // Log the
+//            log.error("Exception in getUserNameFromToken : {}", e.getMessage());
+//            // Handle the exception, return null or throw custom exception
+//            return null;
+//        }
+//    }
     public String getUserNameFromToken(String token) {
-        try {
-            if (isTokenExpired(token)) {
-                throw new RuntimeException("token Expired!");
-            }
-            return extractClaim(token, Claims::getSubject);
-        } catch (SignatureException e) {
-            // Log the
-            log.error("Exception in getUserNameFromToken : {}", e.getMessage());
-            // Handle the exception, return null or throw custom exception
-            return null;
-        }
+        return extractClaim(token, Claims::getSubject);
     }
 
     // Other methods...

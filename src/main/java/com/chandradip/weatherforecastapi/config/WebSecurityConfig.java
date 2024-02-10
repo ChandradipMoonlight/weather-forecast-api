@@ -17,9 +17,14 @@ public class WebSecurityConfig {
 
     public static final String[] WHITE_LIST_URLS = {
             "/api/v1/user/register",
-            "/api/v1/user/login"
-
+            "/api/v1/user/login",
+            "/v3/api-docs",
+            "/webjars/**",
+            "/swagger-ui/**",  // Whitelist Swagger UI
+            "/swagger-ui.html",
+            "/swagger-resources/**"
     };
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -36,19 +41,14 @@ public class WebSecurityConfig {
                             .anyExchange().authenticated();
                         }
                 )
-//                .exceptionHandling()
-//                .authenticationEntryPoint((swe, e) ->
-//                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
-//                ).accessDeniedHandler((swe, e) ->
-//                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN))
-//                )
-                .exceptionHandling(ex->ex.authenticationEntryPoint((swe, e)->
-                        Mono.fromRunnable(()->swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(exceptions ->
+                        exceptions
+                                .authenticationEntryPoint((swe, e) ->
+                                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)))
+                                .accessDeniedHandler((swe, e) ->
+                                        Mono.fromRunnable(() -> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
                 )
-                .exceptionHandling(ex->ex.accessDeniedHandler((swe, e)->
-                        Mono.fromRunnable(()-> swe.getResponse().setStatusCode(HttpStatus.FORBIDDEN)))
-                )
-                .httpBasic(h->h.disable())
+                .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(fl->fl.disable())
                 .authenticationManager(authManager)
                 .securityContextRepository(contextRepository)

@@ -31,15 +31,15 @@ public class AuthManager implements ReactiveAuthenticationManager {
                 .map(auth -> auth.getCredentials().toString())
                 .flatMap(token -> {
                     String userNameFromToken = jwtService.getUserNameFromToken(token);
-                    if (userNameFromToken == null) {
-                        // Return an error response indicating invalid token
-                        return Mono.error(new InvalidOrExpiredTokenException("Invalid Token"));
-                    }
+//                    if (userNameFromToken == null) {
+//                        // Return an error response indicating invalid token
+//                        return Mono.error(new InvalidOrExpiredTokenException("Invalid Token"));
+//                    }
                     return userService.loadUserByUsername(userNameFromToken)
                             .flatMap(user -> {
-                                if (!jwtService.isTokenValid(token, user)) {
-                                    return Mono.error(new InvalidOrExpiredTokenException("Token is Invalid or Expired!"));
-                                }
+//                                if (!jwtService.isTokenValid(token, user)) {
+//                                    return Mono.error(new InvalidOrExpiredTokenException("Token is Invalid or Expired!"));
+//                                }
                                 return Mono.just(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities()));
                             });
                 });
