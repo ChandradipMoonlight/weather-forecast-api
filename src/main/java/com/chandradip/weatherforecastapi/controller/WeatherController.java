@@ -1,7 +1,7 @@
 package com.chandradip.weatherforecastapi.controller;
 
 import com.chandradip.weatherforecastapi.config.HeaderAuthenticationFilter;
-import com.chandradip.weatherforecastapi.mappers.AppConstants;
+import com.chandradip.weatherforecastapi.constants.AppConstants;
 import com.chandradip.weatherforecastapi.mappers.AppResponse;
 import com.chandradip.weatherforecastapi.service.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;

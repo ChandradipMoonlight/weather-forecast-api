@@ -5,3 +5,12 @@ server:
 spring:
   application:
     name: weather-forecast-api
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: forecast_db
+
+  mvc:
+    problemdetails:
+      enabled: true

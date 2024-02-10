@@ -1,7 +1,7 @@
 package com.chandradip.weatherforecastapi.service;
 
 import com.chandradip.weatherforecastapi.config.HttpHeaderConfig;
-import com.chandradip.weatherforecastapi.mappers.AppConstants;
+import com.chandradip.weatherforecastapi.constants.AppConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;

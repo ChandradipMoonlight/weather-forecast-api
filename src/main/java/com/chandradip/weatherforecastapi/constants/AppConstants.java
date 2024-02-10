@@ -1,4 +1,4 @@
-package com.chandradip.weatherforecastapi.mappers;
+package com.chandradip.weatherforecastapi.constants;
 
 public class AppConstants {
 
@@ -12,5 +12,7 @@ public class AppConstants {
     public static final String RAPID_API_END_POINT_SUMMARY = "/summary/";
 
     public static final String RAPID_API_END_POINT_HOURLY = "/hourly/";
+
+    public static final String AUTHORIZATION = "Authorization";
 
 }
