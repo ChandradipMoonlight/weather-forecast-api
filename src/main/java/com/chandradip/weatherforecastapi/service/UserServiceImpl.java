@@ -13,11 +13,14 @@ import com.chandradip.weatherforecastapi.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
 
 @Service
 @Slf4j
@@ -44,21 +47,40 @@ public class UserServiceImpl implements UserService{
 //                .map(userBuilder::buildUserResponse);
 //    }
     @Override
-    public Mono<AppResponse> registerUser(UserRequest userRequest) {
+    public Mono<AppResponse> registerUser(UserRequest userRequest, ServerHttpRequest httpRequest) {
         return userRepository.findByEmail(userRequest.getEmail())
                 .flatMap(user -> Mono.error(new UserAlreadyPresent("User Already Present with given EmailId : " + user.getEmail(), HttpStatus.CONFLICT.value())))
                 .switchIfEmpty(
                         userRepository.save(userBuilder.buildUser(userRequest))
-                                .map(userBuilder::buildUserResponse)
+                                .map(user -> {
+                                    log.info("click link To verify User : {}", getVerifyUserUrl(String.valueOf(httpRequest.getURI()), user));
+                                    return userBuilder.buildUserResponse(user);
+                                })
                 )
-                .map(userResponse -> new AppResponse(userResponse, AppConstants.SUCCESS));
+                .map(userResponse -> {
+                    return new AppResponse(userResponse, AppConstants.SUCCESS);
+                } );
+    }
+
+    private String getVerifyUserUrl(String uri, User user) {
+        String url = uri.substring(0, uri.indexOf("/register"));
+        url = url+"/verify/"+jwtService.generateToken(user);
+        return url;
     }
 
 
 
     @Override
     public Mono<AppResponse> verifyUser(String token) {
-        return null;
+        String userNameFromToken = jwtService.getUserNameFromToken(token);
+        return this.loadUserByUsername(userNameFromToken)
+                .flatMap(user -> {
+                    user.setVerified(true);
+                    return userRepository.save(user)
+                            .map(userBuilder::buildUserResponse);
+                })
+                .map(user -> new AppResponse(user, AppConstants.SUCCESS))
+                .switchIfEmpty(Mono.just(new AppResponse("User not fond with given userName", AppConstants.FAIL, HttpStatus.UNAUTHORIZED.value())));
     }
 
     @Override
