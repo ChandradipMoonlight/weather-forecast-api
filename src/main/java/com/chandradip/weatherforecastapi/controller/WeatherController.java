@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/api/v1/forecast/")
+@RequestMapping("/api/v1/forecast")
 public class WeatherController {
 
     @Autowired
@@ -52,7 +52,7 @@ public class WeatherController {
 //        }
         return weatherService.getForecastSummaryByLocationName(city)
                 .map(appResponse -> {
-                    if (appResponse.getStatus() == AppConstants.SUCCESS) {
+                    if (appResponse.getStatus().equalsIgnoreCase(AppConstants.SUCCESS)) {
                         return ResponseEntity.ok().body(appResponse);
                     } else {
                         return ResponseEntity.status(appResponse.getStatusCode()).body(appResponse);
